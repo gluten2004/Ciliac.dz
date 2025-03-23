@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وصفات خالية من الغلوتين</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('images/Black Bones.png') no-repeat center center/cover;
+            text-align: center;
+            padding: 20px;
+            color: #000000;
+            margin: 0;
+        }
+        header {
+            background-color: rgb(0, 195, 255);
+            color: white;
+            padding: 15px;
+            font-size: 26px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .recipe-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            justify-items: center;
+            padding: 20px;
+        }
+        .recipe {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .recipe:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        .recipe h3 {
+            color: hsl(204, 100%, 59%);
+        }
+        .recipe img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .back-btn, .lang-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #22ff47;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-right: 10px;
+        }
+        .back-btn:hover, .lang-btn:hover {
+            background: #e64a19;
+        }
+    </style>
+</head>
+<body background="background.jpg">
+    <header>وصفات خالية من الغلوتين</header>
+    <button class="lang-btn" onclick="switchLanguage()">🇫🇷 Français / 🇦🇪 العربية</button>
+    <div id="recipes" class="recipe-container"></div>
+    <button class="back-btn" onclick="window.history.back()">⬅ العودة</button>
+    <script>
+        const recipes = {
+            ar: [
+                { 
+                    title: "بان كيك خالي من الغلوتين", 
+                    image: "images/pncick.png", 
+                    details: [
+                        "امزجي المكونات الجافة معًا.",
+                        "في وعاء صغير، اخلط مكونات الصلصة حتى تتجانس.",
+                        "صب الصلصة فوق الخضروات وامزج جيدًا.",
+                        "رش الجبنة المفتتة والبقدونس المفروم على الوجه.",
+                        "قدم السلطة فورًا واستمتع بها."
+                    ],
+                    ingredients: [
+                        "1 كوب دقيق خالي من الغلوتين",
+                        "1 ملعقة صغيرة بيكنج باودر",
+                        "1 بيضة",
+                        "1 كوب حليب",
+                        "1 ملعقة صغيرة فانيليا"
+                    ]
+                }
+                
+               , { 
+                    title: "سلطة الخضروات المشكلة", 
+                    image: "images/salade.png", 
+                    details: [
+                        "في وعاء كبير، اخلط جميع الخضروات معًا.",
+                        "أضيفي البيض والحليب والفانيليا وامزجي حتى تحصلي على خليط متجانس.",
+                        "سخني مقلاة غير لاصقة وصبي قليلًا من الخليط.",
+                        "اتركيه حتى تظهر الفقاعات، ثم اقلبيه واتركيه حتى ينضج.",
+                        "قدميه مع العسل أو الفواكه."
+                    ],
+                    ingredients: [
+                        "2 حبات فلفل ملون (أحمر وأصفر)، مقطعة إلى شرائح ",
+                        " 1/2 خيار، مقطع إلى شرائح ",
+                        "1 كوب طماطم كرزية، مقطعة إلى نصفين ",
+                        "1/2 كوب جزر مبشور ",
+                        "1/4 كوب بصل أحمر، مقطع إلى شرائح رفيعة ",
+                        "1/4 كوب زيتون أسود، مقطع إلى شرائح ",
+                        "1/2 كوب جبنة فيتا، مفتتة ",
+                        "2 ملعقة كبيرة بقدونس مفروم ",
+                    ],
+                    Vinaigrette : [
+                        "1/4 كوب زيت زيتون  .",
+                        "2ملعقة كبيرة عصير ليمون .",
+                        "1  ملعقة صغيرة خردل ديجون .",
+                        "1 ملعقة صغيرة عسل.",
+                        "ملح وفلفل حسب الذوق ."
+                        ]
+                }
+           
+                ,{ 
+                    title: "خبز التورتيلا  ", 
+                    image: "images/pain tortila.png", 
+                    details: [
+                        "تحضير العجينة: في وعاء كبير أو في وعاء الخلاط، اخلط جميع المكونات معًا (الدقيق، الزيت، الملح، البيكنج باودر، السكر، والحليب). اعجن العجينة حتى تصبح ناعمة وغير لاصقة.",
+                        "الراحة: غطِ العجينة واتركها ترتاح لمدة 30 دقيقة. ",
+                        "تشكيل التورتيلا: قسم العجينة إلى 16 كرة صغيرة. افرد كل كرة باستخدام الشوبك على سطح مرشوش بالدقيق حتى تصبح رقيقة. ",
+                        "الطهي: سخن مقلاة غير لاصقة على نار متوسطة. اطه كل قطعة تورتيلا لمدة 40 ثانية على كل جانب أو حتى تظهر فقاعات صغيرة وتصبح ذهبية اللون.",
+                        "التقديم: احتفظ بالتورتيلا المطهية في منشفة نظيفة للحفاظ على طراوتها. يمكنك استخدامها لتحضير الفاهيتا، البوريتو، أو أي وصفة أخرى تفضلها. "
+                    ],
+                    ingredients: [
+                        "1 كوب دقيق خالي من الغلوتين",
+                        "1 ملعقة صغيرة بيكنج باودر",
+                        "1 بيضة",
+                        "1 كوب حليب",
+                        "1 ملعقة صغيرة فانيليا"
+                    ]
+                }
+                ,{ 
+                    title: "فطائر الجزر و البطاطس ", 
+                    image: "images/cpc.png", 
+                    details: [
+                        "تحضير الخليط: في وعاء كبير، اخفق البيض. أضف الجزر، البطاطس، البصل، الدقيق، والبيكنج باودر. اخلط جيدًا حتى تتجانس جميع المكونات. .",
+                        " تسخين المقلاة: رش قليل من الزيت النباتي في مقلاة غير لاصقة وسخنها على نار متوسطة. ",
+                        "طهي الكريب: اسكب حوالي 1/2 كوب من الخليط في المقلاة الساخنة. اطه الكريب لمدة حوالي دقيقتين أو حتى يصبح ذهبي اللون. اقلب الكريب واطهه لمدة دقيقة أخرى حتى يصبح ذهبيًا من الجهة الأخرى.",
+                        "التقديم: كرر العملية مع باقي الخليط. قدم الكريب ساخنًا، ويمكنك تقديمه مع القشدة الحامضة أو الزبادي الطبيعي لإضافة نكهة إضافية . "
+                    ],
+                    ingredients: [
+                        "2 كوب من الجزر المبشور ناعمًا (حوالي 500 مل) ",
+                        "2 كوب من البطاطس المبشورة ناعمًا (حوالي 500 مل) ",
+                        "1 بصلة مبشورة ناعمًا ",
+                        "4 بيضات ",
+                        "2 ملعقة كبيرة من دقيق القمح الكامل ",
+                        "1/2 ملعقة صغيرة من البيكنج باودر ",
+                        "ملح وفلفل حسب الذوق ",
+                        "زيت نباتي للطهي "
+                    ]
+                }
+                ,{ 
+                    title: "شوربة العدس بالخضروات  ", 
+                    image: "images/Soupe aux légumes et aux lentilles.png", 
+                    details: [
+                        " تحمير الخضار: في قدر كبير على نار متوسطة، سخن الزيت وأضف البصل، الجزر، والكرفس. قلّب لمدة 5 إلى 7 دقائق حتى تصبح الخضار طرية. أضف الملح والفلفل  . ",
+                        "  إضافة السوائل: أضف مرق الدجاج، حساء الطماطم المكثف، والطماطم المقطعة. اخلط جيدًا، غطِ القدر واتركه على نار هادئة لمدة 15 دقيقة . ",
+                        "   إضافة العدس والسبانخ: أضف العدس المغسول والمصفى والسبانخ الطازجة. استمر في الطهي لمدة 2 إلى 3 دقائق حتى يذبل السبانخ. ",
+                        "   تعديل التوابل: تذوق الشوربة وعدل التوابل بإضافة المزيد من الملح والفلفل إذا لزم الأمر. "
+                    ],
+                    ingredients: [
+                        " 1 كوب من البصل الأصفر المفروم .  ",
+                        " 1 كوب من الجزر المقطع إلى مكعبات .  ",
+                        "  1 كوب من الكرفس المقطع إلى مكعبات . ",
+                        " 2 ملعقة كبيرة من زيت الزيتون .  ",
+                        "  900 مل من مرق الدجاج قليل الصوديوم . ",
+                        " 284 مل من حساء الطماطم المكثف .  ",
+                        "  796 مل من الطماطم المقطعة . ",
+                        "540 مل من العدس المغسول والمصفى .   ",
+                        "  142 غرام من السبانخ الطازجة . ",
+                        "  ملح وفلفل حسب الذوق  "
+                    ]
+                }  
+                ,{ 
+                    title:"فطائر التفاح و القرفة  ", 
+                    image: "images/pommes.png", 
+                    details: [
+                    "تحضير الخليط: في وعاء كبير، اخلط دقيق الأرز أو دقيق اللوز، البيكنج باودر، القرفة، السكر، والملح. أضف البيض والحليب تدريجيًا مع التحريك المستمر حتى تحصل على خليط ناعم ومتجانس. ",
+                    "تحضير التفاح: قشر التفاح وأزل البذور، ثم قطع التفاح إلى شرائح دائرية. ",
+                    "تغطية التفاح بالخليط: اغمس شرائح التفاح في الخليط حتى تتغطى بالكامل. ",
+                    "القلي: سخن الزيت في مقلاة عميقة على نار متوسطة. اقلي شرائح التفاح المغطاة بالخليط حتى تصبح ذهبية اللون من الجانبين.",
+                    "التصفية والتقديم: صفّ الفطائر على ورق مطبخ لامتصاص الزيت الزائد. رش السكر البودرة على الفطائر وقدّمها ساخنة. "                    
+                ],    
+                    ingredients: [
+                        
+                        "4 تفاحات .",   
+                        "250 غرام من دقيق الأرز أو دقيق اللوز .",
+                        "1 كيس من البيكنج باودر الخالي من الغلوتين .",
+                        "2 بيضات .",
+                        "200 مل من الحليب  .",
+                        "1 ملعقة صغيرة من القرفة المطحونة .",
+                        "1 ملعقة صغيرة من السكر .",
+                        "رشة ملح .",
+                        "زيت للقلي .",
+                        "سكر بودرة للتزيين ."
+                    ]
+                }
+            ],
+            fr: [
+                { 
+                    title: "Pancakes sans gluten", 
+                    image: "images/pncick.png", 
+                    details: [
+                        "Mélangez les ingrédients secs ensemble.",
+                        "Ajoutez l'œuf, le lait et la vanille, puis mélangez jusqu'à obtenir une pâte homogène.",
+                        "Faites chauffer une poêle antiadhésive et versez un peu de pâte.",
+                        "Laissez cuire jusqu'à l'apparition de bulles, puis retournez et laissez cuire jusqu'à ce que ce soit doré.",
+                        "Servez avec du miel ou des fruits."
+                    ],
+                    ingredients: [
+                        "1 tasse de farine sans gluten",
+                        "1 cuillère à café de levure chimique",
+                        "1 œuf",
+                        "1 tasse de lait",
+                        "1 cuillère à café de vanille"
+                    ]
+                }
+               ,{ 
+                    title: "Salade de légumes variés", 
+                    image: "images/salade.png", 
+                    details: [
+                        "Dans un grand bol, mélangez tous les légumes ensemble.",
+                        "Dans un petit bol, mélangez les ingrédients de la vinaigrette jusqu’à ce qu’ils soient bien combinés.",
+                        "Versez la vinaigrette sur les légumes et mélangez bien."
+                    ],
+                    ingredients: [
+                        "2 poivrons colorés (rouge et jaune), coupés en lanières. ",
+                        "1/2 concombre, coupé en tranches.",
+                        "1 tasse de tomates cerises, coupées en deux .",
+                        "1/2 tasse de carottes râpées.",
+                        "1/4 tasse d’oignon rouge, coupé en fines tranches .",
+                        "1/4 tasse d’olives noires, coupées en tranches.",
+                        "1/2 tasse de fromage feta, émietté.",
+                        "2 cuillères à soupe de persil haché "
+                    ],
+                    Vinaigrette : [
+                        "1/4 tasse d’huile d’olive .",
+                        "2 cuillères à soupe de jus de citron .",
+                        "1 cuillère à café de moutarde de Dijon.",
+                        "1 cuillère à café de miel.",
+                        "Sel et poivre au goût."
+                        ]
+                    },
+                    { 
+                    title: "Pain tortilla", 
+                    image: "images/pain tortila.png", 
+                    details: [
+                        "Préparer la pâte : Dans un grand bol ou dans le bol d’un robot, mélangez tous les ingrédients (farine, huile, sel, levure chimique, sucre et lait). Pétrissez la pâte jusqu’à ce qu’elle soit lisse et non collante.",
+                        "Repos : Couvrez la pâte et laissez-la reposer pendant 30 minutes.",
+                        "Former les tortillas : Divisez la pâte en 16 petites boules. Étalez chaque boule avec un rouleau à pâtisserie sur une surface légèrement farinée jusqu’à obtenir une galette fine.",
+                        "Cuisson : Faites chauffer une poêle antiadhésive à feu moyen. Faites cuire chaque tortilla pendant environ 40 secondes de chaque côté, ou jusqu’à ce que des petites bulles apparaissent et que la tortilla soit dorée. ",
+                        "Service : Gardez les tortillas cuites dans un torchon propre pour qu’elles restent moelleuses. Vous pouvez les utiliser pour préparer des fajitas, burritos ou toute autre recette de votre choix. ",
+                        "Conservation : Vous pouvez conserver les tortillas dans un sac plastique hermétique au réfrigérateur pendant deux jours. ",
+                        "Réchauffage : Pour réchauffer les tortillas, vous pouvez les passer au micro-ondes pendant 30 secondes ou les chauffer dans une poêle chaude pendant quelques secondes de chaque côté."
+                    ],
+                    ingredients: [
+                        "500 g de farine sans glutan . ",
+                        "9 cl d’huile (de préférence une huile végétale comme l’huile de tournesol ou de colza).",
+                        "1 cuillère à café de sel .",
+                        "1 cuillère à café de levure chimique.",
+                        "1/2 cuillère à café de sucre .",
+                        "300 ml de lait. "
+                    ]
+                },
+                { 
+                    title: "Crêpes aux carottes et aux pommes de terre", 
+                    image: "images/cpc.png", 
+                    details: [
+                        "Préparer le mélange : Dans un grand bol, battre les œufs. Ajouter les carottes, les pommes de terre, l’oignon, la farine et la poudre à pâte. Bien mélanger jusqu’à ce que tous les ingrédients soient bien incorporés. ",
+                        "Chauffer la poêle : Vaporiser légèrement une poêle antiadhésive avec de l’huile végétale et chauffer à feu moyen.  ",
+                        "Cuisson des crêpes : Verser environ 1/2 tasse du mélange dans la poêle chaude. Cuire pendant environ 2 minutes ou jusqu’à ce que la crêpe soit dorée. Retourner la crêpe et cuire encore une minute jusqu’à ce qu’elle soit dorée de l’autre côté.  ",
+                        "Servir : Répéter avec le reste du mélange. Servir les crêpes chaudes  "
+                    ],
+                    ingredients: [
+                        "2 tasses de carottes râpées finement (environ 500 ml)  . ",
+                        "2 tasses de pommes de terre râpées finement (environ 500 ml) .",
+                        "1 oignon râpé finement .",
+                        "4 œufs .",
+                        "2 cuillères à soupe de farine sans gluten .",
+                        "1/2 cuillère à café de poudre à pâte . ",
+                        "Sel et poivre au goût. ",
+                        "Huile végétale pour la cuisson . "
+                    ]
+                },
+                { 
+                    title: "Soupe aux légumes et aux lentilles ", 
+                    image: "images/Soupe aux légumes et aux lentilles.png", 
+                    details: [
+                        "Faire revenir les légumes : Dans une grande casserole à feu moyen, versez l’huile et faites revenir les oignons, les carottes et le céleri pendant environ 5 à 7 minutes jusqu’à ce qu’ils soient tendres. Salez et poivrez. ",
+                        "Ajouter les liquides : Versez le bouillon de poulet, la soupe de tomates condensée et les tomates en dés. Mélangez bien, couvrez et laissez mijoter pendant environ 15 minutes.  ",
+                        "Ajouter les lentilles et les épinards : Ajoutez les lentilles rincées et égouttées ainsi que les bébés épinards. Poursuivez la cuisson pendant 2 à 3 minutes ou jusqu’à ce que les épinards soient tombés.  ",
+                        " Rectifier l’assaisonnement : Goûtez et ajustez l’assaisonnement avec du sel et du poivre si nécessaire. ",
+                        " Conseils : Vous pouvez ajouter des herbes fraîches comme le basilic ou le persil pour plus de saveur. Cette soupe peut être congelée et réchauffée pour des repas rapides et sains.  "
+                    ],
+                    ingredients: [
+                        "1 tasse d’oignon jaune haché. ",
+                        "1 tasse de carottes coupées en dés .",
+                        "1 tasse de céleri coupé en dés  .",
+                        "2 cuillères à soupe d’huile d’olive  .",
+                        "1 boîte (900 ml) de bouillon de poulet réduit en sodium  .",
+                        "1 boîte (284 ml) de soupe de tomates condensée . ",
+                        "1 boîte (796 ml) de tomates en dés . ",
+                        "1 boîte (540 ml) de lentilles rincées et égouttées  . ",
+                        "1 contenant (142 g) de bébés épinards  . ",
+                        "Sel et poivre au goût . "
+                    ]
+                },
+                { 
+                    title: "Beignets aux pommes et à la cannelle  ", 
+                    image: "images/pommes.png", 
+                    details: [
+                        "Préparer la pâte : Dans un grand bol, mélangez la farine de riz ou de farine d’amande, la levure chimique, la cannelle, le sucre et le sel. Ajoutez les œufs et le lait progressivement en remuant constamment jusqu’à obtenir une pâte lisse et homogène.  ",
+                        "Préparer les pommes : Épluchez les pommes, retirez les pépins et coupez-les en tranches rondes.  ",
+                        "Enrober les pommes : Trempez les tranches de pommes dans la pâte jusqu’à ce qu’elles soient bien enrobées. ",
+                        "Frire : Faites chauffer l’huile dans une poêle profonde à feu moyen. Faites frire les tranches de pommes enrobées de pâte jusqu’à ce qu’elles soient dorées des deux côtés.  ",
+                        "Égoutter et servir : Égouttez les beignets sur du papier absorbant pour enlever l’excès d’huile. Saupoudrez de sucre glace et servez chaud. "
+                    ],
+                    ingredients: [
+                        "4 pommes. ",
+                        "250 g de farine de riz ou de farine d’amande  .",
+                        "1 sachet de levure chimique sans gluten .",
+                        "2 œufs .",
+                        "200 ml de lait (vous pouvez utiliser du lait d’amande ou de coco) .",
+                        "1 cuillère à café de cannelle moulue . ",
+                        "1 cuillère à café de sucre . ",
+                        "Une pincée de sel . ",
+                        "Huile pour la friture  . ",
+                        "Sucre glace pour la décoration  . "
+                    ]
+                },
+            ]
+        };
+        
+        let currentLang = 'ar';
+        
+        function loadRecipes() {
+            const recipesContainer = document.getElementById('recipes');
+            recipesContainer.innerHTML = '';
+            recipes[currentLang].forEach(recipe => {
+                const div = document.createElement('div');
+                div.classList.add('recipe');
+                div.innerHTML = `
+                    <img src="${recipe.image}" alt="${recipe.title}">
+                    <h3>${recipe.title}</h3>
+                    <strong>${currentLang === 'ar' ? 'المكونات' : 'Ingrédients'}:</strong>
+                    <ul>${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
+                    <strong>${currentLang === 'ar' ? 'طريقة التحضير' : 'Préparation'}:</strong>
+                    <ul>${recipe.details.map(step => `<li>${step}</li>`).join('')}</ul>
+                `;
+                recipesContainer.appendChild(div);
+            });
+        }
+        
+        function switchLanguage() {
+            currentLang = currentLang === 'ar' ? 'fr' : 'ar';
+            document.querySelector('header').textContent = currentLang === 'ar' ? 'وصفات خالية من الغلوتين' : 'Recettes sans gluten';
+            loadRecipes();
+        }
+        
+        loadRecipes();
+    </script>
+</body>
+</html>

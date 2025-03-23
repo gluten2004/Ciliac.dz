@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماسح أكواد المنتجات</title>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ffecd2, #4ddbed);
+            text-align: center;
+            padding: 20px;
+            color: #333;
+        }
+        header {
+            background-color: #4ad059;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        #scanner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        #reader {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .result {
+            font-size: 20px;
+            font-weight: bold;
+            color: #5fa0c5;
+            margin-top: 10px;
+            padding: 10px;
+            background: #dde1e2;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #23ce4b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            background: #60bdff;
+        }
+    </style>
+</head>
+<header>
+    <img src="/mnt/data/LOGO.jpg" alt="Logo" class="logo">
+</header>
+<body>
+    <header>ماسح أكواد المنتجات</header>
+    <div id="scanner-container">
+        <div id="reader"></div>
+        <p class="result" id="result">قم بمسح الكود لرؤية النتيجة</p>
+        <button class="back-btn" onclick="window.history.back()">⬅ العودة</button>
+    </div>
+    
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('result').innerText = "✅ الكود: " + decodedText;
+        }
+        function onScanFailure(error) {
+            console.warn(`خطأ في المسح: ${error}`);
+        }
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+</head>
+  <body onload="switchLanguage('ar')">
+    <div class="language-switch">
+        <button onclick="switchLanguage('ar')">🇩🇿 العربية</button>
+        <button onclick="switchLanguage('fr')">🇫🇷 Français</button>
+    </div>
+    <div class="container" id="tips-list">
+    </div>
+    
+  </body>
+</body>
+</html>

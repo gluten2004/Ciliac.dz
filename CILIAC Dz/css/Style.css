@@ -1,0 +1,56 @@
+.frest { 
+    background-image:url('../images/&.png') ;
+    background-size: contain;
+    background-attachment: scroll;
+}
+.table-frest { 
+    width: 100%;
+    border: 1px solid rgb(81, 81, 106);
+    border-spacing: 3px;
+}
+.table-frest thead th{
+    background-color: rgb(44, 195, 208);
+    color:rgb(41, 30, 197);
+text-align: center;
+     font-weight:bold
+}
+.table-frest tbody  td {
+    background-color: rgb(128, 133, 163);
+    text-align: center;
+    padding:10px ;
+    vertical-align: middle;
+}
+.table-frest tfoot td {
+    background-color: rgb(128, 133, 163);
+    text-align: center;
+    padding:10px ;
+    vertical-align: middle;
+     }
+
+
+.m{
+     width:200px;
+    border-radius:  10px 10px 10px ; centre:auto;
+   }
+.i{
+    width: 200px;border-radius : 10px 10px 10px;right: auto;
+  }
+
+.l{
+    width: 200px;
+    border-radius : 10px 10px 10px;left:auto; 
+}
+
+
+div {
+ text-align: center;
+ font-size:19px ;
+ letter-spacing: 2px;
+ font-family: Arial, Helvetica, sans-serif;
+ text-indent: 20px;}
+.lili{
+    text-align: left;
+}
+ .mim{
+    background-color: rgb(240, 165, 219);
+ }
