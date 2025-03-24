@@ -64,9 +64,6 @@
         }
     </style>
 </head>
-<header>
-    <img src="/mnt/data/LOGO.jpg" alt="Logo" class="logo">
-</header>
 <body>
     <header>ماسح أكواد المنتجات</header>
     <div id="scanner-container">
@@ -74,26 +71,57 @@
         <p class="result" id="result">قم بمسح الكود لرؤية النتيجة</p>
         <button class="back-btn" onclick="window.history.back()">⬅ العودة</button>
     </div>
-    
+
     <script>
-        function onScanSuccess(decodedText, decodedResult) {
-            document.getElementById('result').innerText = "✅ الكود: " + decodedText;
+        async function fetchProductData(barcode) {
+            try {
+                let apiUrl = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
+                let response = await fetch(apiUrl);
+                let data = await response.json();
+
+                if (!data || !data.product) {
+                    document.getElementById('result').innerText = "⚠️ المنتج غير موجود في قاعدة البيانات!";
+                    return;
+                }
+
+                let product = data.product;
+                let productName = product.product_name || "غير معروف";
+                let brand = product.brands || "غير محدد";
+                let ingredients = product.ingredients_text || "لا توجد مكونات";
+                let gluten_status = "❌ يحتوي على الغلوتين"; // افتراض أنه يحتوي على الغلوتين
+
+                if (product.ingredients_analysis_tags && Array.isArray(product.ingredients_analysis_tags)) {
+                    if (product.ingredients_analysis_tags.includes("en:gluten-free")) {
+                        gluten_status = "✅ خالٍ من الغلوتين";
+                    } else if (product.ingredients_analysis_tags.includes("en:contains-gluten")) {
+                        gluten_status = "❌ يحتوي على الغلوتين";
+                    } else {
+                        gluten_status = "🚨 غير محدد";
+                    }
+                }
+
+                document.getElementById('result').innerHTML = `
+                    📦 المنتج: ${productName} <br>
+                    🏭 العلامة التجارية: ${brand} <br>
+                    🍽️ المكونات: ${ingredients} <br>
+                    ⚠️ حالة الغلوتين: ${gluten_status}
+                `;
+            } catch (error) {
+                document.getElementById('result').innerText = "❌ خطأ في جلب البيانات!";
+            }
         }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('result').innerText = "جارٍ جلب البيانات...";
+            fetchProductData(decodedText);
+        }
+
         function onScanFailure(error) {
             console.warn(`خطأ في المسح: ${error}`);
         }
+
         let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     </script>
-</head>
-  <body onload="switchLanguage('ar')">
-    <div class="language-switch">
-        <button onclick="switchLanguage('ar')">🇩🇿 العربية</button>
-        <button onclick="switchLanguage('fr')">🇫🇷 Français</button>
-    </div>
-    <div class="container" id="tips-list">
-    </div>
-    
-  </body>
 </body>
 </html>
