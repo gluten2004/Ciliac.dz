@@ -42,9 +42,9 @@ async function fetchProductData(barcode) {
         // ✅ **إذا لم يكن هناك تحليل من API، نقوم بفحص المكونات يدويًا**
         if (gluten_status === "🚨 غير محدد" && ingredients) {
             let glutenKeywords = [
-                "قمح", "فرينة", "فرينة القمح", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح",  
-                "wheat", "flour", "gluten", "barley", "couscous", "oats", "wheat starch", 
-                "blé", "farine", "gluten", "orge", "couscous", "avoine", "amidon de blé"
+                "قمح", "فرينة", "فرينة القمح", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح", "سميد القمح", 
+                "wheat", "flour", "gluten", "barley", "couscous", "oats", "wheat starch", "semolina",
+                "blé", "farine", "gluten", "orge", "couscous", "avoine", "amidon de blé", "semoule de blé"
             ];
 
             let containsGluten = glutenKeywords.some(word => ingredients.includes(word));
