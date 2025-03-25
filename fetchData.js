@@ -15,21 +15,21 @@ async function fetchProductData(barcode) {
         let productName = product.product_name || "غير معروف";
         let brand = product.brands || "غير محدد";
 
-        // 🛑 التحقق من المكونات بـ 3 لغات 🛑
+        // 🔍 المكونات باللغات المتاحة
         let ingredients = (
             product.ingredients_text ||
             product.ingredients_text_ar ||
             product.ingredients_text_fr ||
             product.ingredients_text_en ||
             "لا توجد مكونات"
-        ).toLowerCase();
+        ).toLowerCase().trim(); // تحويل النص إلى حروف صغيرة وإزالة الفراغات الزائدة
 
         let gluten_status = "🚨 غير محدد"; // الافتراضي
 
         // ✅ طباعة المكونات
         console.log("🍽️ المكونات:", ingredients);
 
-        // 1️⃣ **إذا كانت هناك بيانات Open Food Facts عن الغلوتين**
+        // 1️⃣ **التحقق من بيانات الغلوتين في API**
         if (product.ingredients_analysis_tags && Array.isArray(product.ingredients_analysis_tags)) {
             if (product.ingredients_analysis_tags.includes("en:gluten-free")) {
                 gluten_status = "✅ خالٍ من الغلوتين";
@@ -38,7 +38,7 @@ async function fetchProductData(barcode) {
             }
         }
 
-        // 2️⃣ **إذا لم تكن هناك بيانات، نفحص المكونات يدويًا**
+        // 2️⃣ **إذا لم تكن هناك بيانات، نحلل المكونات يدويًا**
         if (gluten_status === "🚨 غير محدد") {
             let glutenKeywords = [
                 "قمح", "فرينة", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح", // بالعربية
