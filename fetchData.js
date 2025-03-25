@@ -4,7 +4,7 @@ async function fetchProductData(barcode) {
         let response = await fetch(apiUrl);
         let data = await response.json();
 
-        console.log("📢 البيانات الكاملة من API:", data); // ✅ طباعة كل البيانات
+        console.log("📢 البيانات الكاملة من API:", data); // ✅ طباعة البيانات لفحصها
 
         if (!data || !data.product) {
             document.getElementById('result').innerText = "⚠️ المنتج غير موجود في قاعدة البيانات!";
@@ -15,22 +15,23 @@ async function fetchProductData(barcode) {
         let productName = product.product_name || "غير معروف";
         let brand = product.brands || "غير محدد";
 
-        // 🔍 المكونات باللغات المتاحة
+        // 🔍 استخراج المكونات (بأي لغة متاحة)
         let ingredients = (
             product.ingredients_text_ar || 
             product.ingredients_text_fr || 
             product.ingredients_text_en || 
             product.ingredients_text || 
-            "لا توجد مكونات"
+            ""
         ).toLowerCase().trim(); // تحويل إلى حروف صغيرة وإزالة الفراغات
 
         console.log("🍽️ المكونات المستخرجة:", ingredients);
 
         let gluten_status = "🚨 غير محدد"; // الافتراضي
 
-        // ✅ التحقق مما إذا كانت بيانات الغلوتين متوفرة في API
+        // ✅ **التحقق من بيانات الغلوتين في API**
         if (product.ingredients_analysis_tags && Array.isArray(product.ingredients_analysis_tags)) {
-            console.log("🔍 تحليل المكونات من API:", product.ingredients_analysis_tags);
+            console.log("🔍 تحليل الغلوتين من API:", product.ingredients_analysis_tags);
+
             if (product.ingredients_analysis_tags.includes("en:gluten-free")) {
                 gluten_status = "✅ خالٍ من الغلوتين";
             } else if (product.ingredients_analysis_tags.includes("en:contains-gluten")) {
@@ -38,32 +39,29 @@ async function fetchProductData(barcode) {
             }
         }
 
-        // ✅ إذا لم يكن هناك تحليل من API، نفحص يدويًا الكلمات في المكونات
-        if (gluten_status === "🚨 غير محدد") {
+        // ✅ **إذا لم يكن هناك تحليل من API، نقوم بفحص المكونات يدويًا**
+        if (gluten_status === "🚨 غير محدد" && ingredients) {
             let glutenKeywords = [
-                "قمح", "فرينة", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح",  // بالعربية
-                "wheat", "flour", "gluten", "barley", "couscous", "oats", "wheat starch", // بالإنجليزية
-                "blé", "farine", "gluten", "orge", "couscous", "avoine", "amidon de blé" // بالفرنسية
+                "قمح", "فرينة", "فرينة القمح", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح",  
+                "wheat", "flour", "gluten", "barley", "couscous", "oats", "wheat starch", 
+                "blé", "farine", "gluten", "orge", "couscous", "avoine", "amidon de blé"
             ];
 
-            let containsGluten = glutenKeywords.some(word => {
-                let found = ingredients.includes(word);
-                if (found) console.log(`❗ تم العثور على مكون يحتوي على الغلوتين: ${word}`);
-                return found;
-            });
+            let containsGluten = glutenKeywords.some(word => ingredients.includes(word));
 
             if (containsGluten) {
                 gluten_status = "❌ يحتوي على الغلوتين (تحليل المكونات)";
+                console.log("❗ تم العثور على مكون يحتوي على الغلوتين!");
             } else {
                 gluten_status = "✅ خالٍ من الغلوتين (تحليل المكونات)";
             }
         }
 
-        // ✅ تحديث النتيجة في الصفحة
+        // ✅ **تحديث النتيجة في الصفحة**
         document.getElementById('result').innerHTML = `
             📦 المنتج: ${productName} <br>
             🏭 العلامة التجارية: ${brand} <br>
-            🍽️ المكونات: ${ingredients} <br>
+            🍽️ المكونات: ${ingredients || "لا توجد مكونات"} <br>
             ⚠️ حالة الغلوتين: ${gluten_status}
         `;
     } catch (error) {
