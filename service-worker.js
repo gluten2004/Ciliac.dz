@@ -3,14 +3,13 @@ self.addEventListener('install', function(e) {
     caches.open('ciliac-cache').then(function(cache) {
       return cache.addAll([
         '/',
-        '/index.html',
-        '/manifest.json',
-        '/icons/icon-192.png',
+        '/Ciliac.dz/index.html',
+        '/Ciliac.dz/manifest.json',
+        '/Ciliac.dz/icons/icon-192.png',
         '/icons/icon-512.png',
-        // أضف باقي الصفحات إذا حبيتي:
-        '/doctors.html',
-        '/recipes.html',
-        '/maps.html'
+        '/Ciliac.dz/doctors.html',
+        '/Ciliac.dz/recipes.html',
+        '/Ciliac.dz/maps.html'
       ]);
     })
   );
