@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CIlIAC.Dz</title>
-    <link rel="manifest" href="/Ciliac.dz/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
     <meta name="theme-color" content="#2c6e49">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -240,36 +240,36 @@
         <p>📱 تابعنا على <a href="https://www.instagram.com" target="_blank">إنستغرام</a> | <a href="https://www.facebook.com/ciliac.dz" target="_blank">فيسبوك</a></p>
     </footer>
    
-      <!-- زر التثبيت -->
-<div style="text-align: center; margin: 30px 0;">
+  </div>
+  <div style="text-align: center; margin: 30px 0;">
     <button id="installBtn" style="display: none; padding: 12px 25px; font-size: 18px; background-color: #388e3c; color: white; border: none; border-radius: 10px; cursor: pointer;">
       📲 تثبيت التطبيق
     </button>
-  </div>
-  
-  <script>
-    let deferredPrompt;
-    const installBtn = document.getElementById('installBtn');
-  
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-block';
-  
-      installBtn.addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('تم تثبيت التطبيق');
-          } else {
-            console.log('تم إلغاء التثبيت');
-          }
-          deferredPrompt = null;
-          installBtn.style.display = 'none';
+    <button id="installBtn" style="display: none;">📲 تثبيت التطبيق</button>
+
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'inline-block';
+
+            installBtn.addEventListener('click', () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('تم تثبيت التطبيق');
+                    } else {
+                        console.log('تم إلغاء التثبيت');
+                    }
+                    deferredPrompt = null;
+                    installBtn.style.display = 'none';
+                });
+            });
         });
-      });
-    });
-  </script>
+    </script>
    <script>
     document.getElementById("search-btn").addEventListener("click", function () {
         const query = document.getElementById("search-bar").value.toLowerCase();
