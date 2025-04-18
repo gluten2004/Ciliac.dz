@@ -79,6 +79,8 @@
                 let response = await fetch(apiUrl);
                 let data = await response.json();
 
+                console.log("📢 البيانات الكاملة:", data);
+
                 if (!data || !data.product) {
                     document.getElementById('result').innerText = "⚠️ المنتج غير موجود في قاعدة البيانات!";
                     return;
@@ -87,27 +89,52 @@
                 let product = data.product;
                 let productName = product.product_name || "غير معروف";
                 let brand = product.brands || "غير محدد";
-                let ingredients = product.ingredients_text || "لا توجد مكونات";
-                let gluten_status = "❌ يحتوي على الغلوتين"; // افتراض أنه يحتوي على الغلوتين
+
+                let ingredients = (
+                    product.ingredients_text_ar || 
+                    product.ingredients_text_fr || 
+                    product.ingredients_text_en || 
+                    product.ingredients_text || 
+                    ""
+                ).toLowerCase().trim();
+
+                console.log("🍽️ المكونات المستخرجة:", ingredients);
+
+                let gluten_status = "🚨 غير محدد";
 
                 if (product.ingredients_analysis_tags && Array.isArray(product.ingredients_analysis_tags)) {
                     if (product.ingredients_analysis_tags.includes("en:gluten-free")) {
                         gluten_status = "✅ خالٍ من الغلوتين";
                     } else if (product.ingredients_analysis_tags.includes("en:contains-gluten")) {
                         gluten_status = "❌ يحتوي على الغلوتين";
+                    }
+                }
+
+                if (gluten_status === "🚨 غير محدد" && ingredients) {
+                    let glutenKeywords = [
+                        "قمح", "فرينة", "فرينة القمح", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح", "سميد القمح", 
+                        "wheat", "flour", "gluten", "barley", "couscous", "oats", "wheat starch", "semolina",
+                        "blé", "farine", "gluten", "orge", "couscous", "avoine", "amidon de blé", "semoule de blé"
+                    ];
+
+                    let containsGluten = glutenKeywords.some(word => ingredients.includes(word));
+
+                    if (containsGluten) {
+                        gluten_status = "❌ يحتوي على الغلوتين (تحليل المكونات)";
                     } else {
-                        gluten_status = "🚨 غير محدد";
+                        gluten_status = "✅ خالٍ من الغلوتين (تحليل المكونات)";
                     }
                 }
 
                 document.getElementById('result').innerHTML = `
                     📦 المنتج: ${productName} <br>
                     🏭 العلامة التجارية: ${brand} <br>
-                    🍽️ المكونات: ${ingredients} <br>
+                    🍽️ المكونات: ${ingredients || "❌ لا توجد مكونات"} <br>
                     ⚠️ حالة الغلوتين: ${gluten_status}
                 `;
             } catch (error) {
                 document.getElementById('result').innerText = "❌ خطأ في جلب البيانات!";
+                console.error("❌ خطأ:", error);
             }
         }
 
