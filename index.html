@@ -190,7 +190,7 @@
    </script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
+        navigator.serviceWorker.register('/Ciliac.dz/service-worker.js')
         .then(() => console.log('✅ Service Worker مسجل بنجاح'))
         .catch((err) => console.error('❌ فشل تسجيل Service Worker:', err));
     }

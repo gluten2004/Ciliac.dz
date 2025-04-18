@@ -2,7 +2,7 @@
 {
   "name": "CILIAC.DZ",
   "short_name": "CILIAC",
-  "start_url": "/Ciliac.dz/index.html",
+  "start_url": "/Ciliac.dz/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2c6e49",
