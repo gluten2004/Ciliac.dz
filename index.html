@@ -7,7 +7,10 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
     <meta name="theme-color" content="#2c6e49">
-    <style>
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+   <style>
         * {
             box-sizing: border-box;
         }
@@ -184,7 +187,15 @@
             document.getElementById("login").innerText = text[lang].login;
             document.getElementById("search-label").innerText = text[lang].search;
         }
-    </script>
+   </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker مسجل بنجاح'))
+        .catch((err) => console.error('❌ فشل تسجيل Service Worker:', err));
+    }
+  </script>
+  
 </head>
 <body onload="switchLanguage('ar')">
     <header>
@@ -228,14 +239,37 @@
         <p>📞 الهاتف: <a href="tel:+213123456789">+213 783 321 319</a></p>
         <p>📱 تابعنا على <a href="https://www.instagram.com" target="_blank">إنستغرام</a> | <a href="https://www.facebook.com/ciliac.dz" target="_blank">فيسبوك</a></p>
     </footer>
-    <script>
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('service-worker.js')
-            .then(function() {
-              console.log('Service Worker مسجل بنجاح');
-            });
-        }
-      </script>
-      
+   
+      <!-- زر التثبيت -->
+<div style="text-align: center; margin: 30px 0;">
+    <button id="installBtn" style="display: none; padding: 12px 25px; font-size: 18px; background-color: #388e3c; color: white; border: none; border-radius: 10px; cursor: pointer;">
+      📲 تثبيت التطبيق
+    </button>
+  </div>
+  
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+  
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-block';
+  
+      installBtn.addEventListener('click', () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('تم تثبيت التطبيق');
+          } else {
+            console.log('تم إلغاء التثبيت');
+          }
+          deferredPrompt = null;
+          installBtn.style.display = 'none';
+        });
+      });
+    });
+  </script>
+  
 </body>
 </html>
