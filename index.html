@@ -270,6 +270,37 @@
       });
     });
   </script>
-  
+   <script>
+    document.getElementById("search-btn").addEventListener("click", function () {
+        const query = document.getElementById("search-bar").value.toLowerCase();
+        
+        // روابط البحث المتوفرة
+        const pages = [
+            { keyword: ["نصيحة", "tips", "مرض"], url: "index(2).html" },
+            { keyword: ["طبيب", "doctor", "médecin"], url: "doctors.html" },
+            { keyword: ["ماسح", "scanner", "code"], url: "INDEX (3).HTML" },
+            { keyword: ["مطعم", "restaurant", "boulangerie", "مخبزة"], url: "maps.html" },
+            { keyword: ["وصفة", "recette", "طهي", "أكل"], url: "recipes.html" },
+            { keyword: ["تسجيل", "login", "connexion"], url: "التسجيل.html" }
+        ];
+    
+        let found = false;
+        for (let page of pages) {
+            for (let word of page.keyword) {
+                if (query.includes(word)) {
+                    window.location.href = page.url;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+        }
+    
+        if (!found) {
+            alert("❌ لم يتم العثور على نتائج للكلمة المدخلة.");
+        }
+    });
+    </script>
+    
 </body>
 </html>
