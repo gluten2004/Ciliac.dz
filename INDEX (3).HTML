@@ -1,154 +1,162 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ماسح أكواد المنتجات</title>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.4/html5-qrcode.min.js" type="text/javascript"></script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(to right, #ffecd2, #4ddbed);
             text-align: center;
             padding: 20px;
-            color: #333;
         }
+
         header {
             background-color: #4ad059;
             color: white;
             padding: 15px;
             font-size: 24px;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        #scanner-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+
+        #reader {
+            width: 300px;
             margin: auto;
         }
-        #reader {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .result {
-            font-size: 20px;
-            font-weight: bold;
-            color: #5fa0c5;
-            margin-top: 10px;
-            padding: 10px;
-            background: #dde1e2;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .back-btn {
+
+        #result {
             margin-top: 20px;
-            padding: 10px 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             font-size: 18px;
-            background: #23ce4b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
+            text-align: right;
         }
-        .back-btn:hover {
-            background: #60bdff;
+
+        #permission-error {
+            color: red;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style-type: none; /* إزالة النقاط من القائمة */
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 5px; /* إضافة مسافة بين عناصر القائمة */
         }
     </style>
 </head>
+
 <body>
-    <header>ماسح أكواد المنتجات</header>
-    <div id="scanner-container">
-        <div id="reader"></div>
-        <p class="result" id="result">قم بمسح الكود لرؤية النتيجة</p>
-        <button class="back-btn" onclick="window.history.back()">⬅ العودة</button>
-    </div>
+    <header>ماسح الباركود - هل يحتوي على غلوتين؟</header>
+    <div id="reader"></div>
+    <div id="result">يرجى مسح باركود المنتج...</div>
+    <div id="permission-error"></div>
 
     <script>
         async function fetchProductData(barcode) {
-            try {
-                let apiUrl = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
-                let response = await fetch(apiUrl);
-                let data = await response.json();
+            const resultEl = document.getElementById('result');
+            resultEl.innerText = "🔄 جاري جلب البيانات...";
 
-                console.log("📢 البيانات الكاملة:", data);
+            try {
+                const apiUrl = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
 
                 if (!data || !data.product) {
-                    document.getElementById('result').innerText = "⚠️ المنتج غير موجود في قاعدة البيانات!";
+                    resultEl.innerText = "⚠️ المنتج غير موجود في قاعدة البيانات.";
                     return;
                 }
 
-                let product = data.product;
-                let productName = product.product_name || "غير معروف";
-                let brand = product.brands || "غير محدد";
+                const product = data.product;
+                const name = product.product_name || "غير معروف";
+                const brand = product.brands || "غير معروف";
 
-                let ingredients = (
-                    product.ingredients_text_ar || 
-                    product.ingredients_text_fr || 
-                    product.ingredients_text_en || 
-                    product.ingredients_text || 
-                    ""
-                ).toLowerCase().trim();
-
-                console.log("🍽️ المكونات المستخرجة:", ingredients);
+                // اختيار أفضل نص للمكونات المتاح
+                let ingredients = product.ingredients_text_ar || product.ingredients_text_fr || product.ingredients_text_en || product.ingredients_text || "❌ لا توجد مكونات";
 
                 let gluten_status = "🚨 غير محدد";
 
-                if (product.ingredients_analysis_tags && Array.isArray(product.ingredients_analysis_tags)) {
-                    if (product.ingredients_analysis_tags.includes("en:gluten-free")) {
-                        gluten_status = "✅ خالٍ من الغلوتين";
-                    } else if (product.ingredients_analysis_tags.includes("en:contains-gluten")) {
-                        gluten_status = "❌ يحتوي على الغلوتين";
-                    }
+                if (product.ingredients_analysis_tags?.includes("en:gluten-free")) {
+                    gluten_status = "✅ خالٍ من الغلوتين";
+                } else if (product.ingredients_analysis_tags?.includes("en:contains-gluten")) {
+                    gluten_status = "❌ يحتوي على الغلوتين";
+                } else {
+                    const glutenWords = ["قمح", "فرينة", "جلوتين", "شعير", "كسكس", "شوفان", "wheat", "gluten", "barley", "couscous", "oats", "semolina", "farine", "blé", "orge"];
+                    const hasGluten = glutenWords.some(word => ingredients.toLowerCase().includes(word));
+                    gluten_status = hasGluten ? "❌ يحتوي على الغلوتين (تحليل المكونات)" : "✅ خالٍ من الغلوتين (تحليل المكونات)";
                 }
 
-                if (gluten_status === "🚨 غير محدد" && ingredients) {
-                    let glutenKeywords = [
-                        "قمح", "فرينة", "فرينة القمح", "جلوتين", "شعير", "كسكس", "شوفان", "نشا القمح", "سميد القمح", 
-                        "wheat", "flour", "gluten", "barley", "couscous", "oats", "wheat starch", "semolina",
-                        "blé", "farine", "gluten", "orge", "couscous", "avoine", "amidon de blé", "semoule de blé"
-                    ];
+                // تنسيق عرض المكونات كقائمة
+                const formattedIngredients = ingredients
+                    .split(',')
+                    .map(ingredient => `<li>${ingredient.trim()}</li>`)
+                    .join('');
 
-                    let containsGluten = glutenKeywords.some(word => ingredients.includes(word));
-
-                    if (containsGluten) {
-                        gluten_status = "❌ يحتوي على الغلوتين (تحليل المكونات)";
-                    } else {
-                        gluten_status = "✅ خالٍ من الغلوتين (تحليل المكونات)";
-                    }
-                }
-
-                document.getElementById('result').innerHTML = `
-                    📦 المنتج: ${productName} <br>
-                    🏭 العلامة التجارية: ${brand} <br>
-                    🍽️ المكونات: ${ingredients || "❌ لا توجد مكونات"} <br>
-                    ⚠️ حالة الغلوتين: ${gluten_status}
+                resultEl.innerHTML = `
+                    <div style="text-align: right;">
+                        📦 المنتج: <strong>${name}</strong><br>
+                        🏭 العلامة التجارية: <strong>${brand}</strong><br>
+                        🍽️ المكونات:
+                        <ul>${formattedIngredients}</ul>
+                        <br>
+                        ⚠️ حالة الغلوتين: <strong>${gluten_status}</strong>
+                    </div>
                 `;
+
             } catch (error) {
-                document.getElementById('result').innerText = "❌ خطأ في جلب البيانات!";
                 console.error("❌ خطأ:", error);
+                resultEl.innerText = "❌ حدث خطأ أثناء جلب البيانات!";
             }
         }
 
         function onScanSuccess(decodedText, decodedResult) {
-            document.getElementById('result').innerText = "جارٍ جلب البيانات...";
+            console.log("✅ باركود:", decodedText, decodedResult);
+            document.getElementById('permission-error').innerText = "";
             fetchProductData(decodedText);
         }
 
         function onScanFailure(error) {
-            console.warn(`خطأ في المسح: ${error}`);
+            console.warn("📛 خطأ مسح:", error);
         }
 
-        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        function startCamera() {
+            const qrCodeScanner = new Html5Qrcode("reader");
+
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    const cameraId = devices[0].id;
+                    qrCodeScanner.start(
+                        cameraId,
+                        {
+                            fps: 10,
+                            qrbox: 250
+                        },
+                        onScanSuccess,
+                        onScanFailure
+                    );
+                } else {
+                    document.getElementById('permission-error').innerText = "❌ لم يتم العثور على كاميرا.";
+                }
+            }).catch(error => {
+                console.error("📵 خطأ الكاميرا:", error);
+                document.getElementById('permission-error').innerText = "❌ لم يتم السماح بالوصول إلى الكاميرا. تحقق من الإعدادات.";
+            });
+        }
+
+        // ابدأ الكاميرا تلقائيًا
+        startCamera();
     </script>
 </body>
+
 </html>
