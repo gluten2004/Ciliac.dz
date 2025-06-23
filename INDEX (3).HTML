@@ -27,6 +27,10 @@
         #reader {
             width: 300px;
             margin: auto;
+            border: 2px solid #4ad059;
+            border-radius: 10px;
+            padding: 10px;
+            background: white;
         }
 
         #result {
@@ -54,16 +58,48 @@
         li {
             margin-bottom: 5px; /* إضافة مسافة بين عناصر القائمة */
         }
+
+        button {
+            background-color: #4ad059;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background-color: #3a9e47;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 
 <body>
     <header>ماسح الباركود - هل يحتوي على غلوتين؟</header>
+    
+    <label for="camera-select">اختر الكاميرا:</label>
+    <select id="camera-select" onchange="startCamera()"></select>
+    
     <div id="reader"></div>
     <div id="result">يرجى مسح باركود المنتج...</div>
     <div id="permission-error"></div>
 
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅ العودة للصفحة الرئيسية</button>
+
     <script>
+        let qrCodeScanner; // متغير لتخزين كائن ماسح الباركود
+        let isCameraStarted = false; // متغير للتحقق مما إذا كانت الكاميرا قد بدأت
+
         async function fetchProductData(barcode) {
             const resultEl = document.getElementById('result');
             resultEl.innerText = "🔄 جاري جلب البيانات...";
@@ -82,7 +118,6 @@
                 const name = product.product_name || "غير معروف";
                 const brand = product.brands || "غير معروف";
 
-                // اختيار أفضل نص للمكونات المتاح
                 let ingredients = product.ingredients_text_ar || product.ingredients_text_fr || product.ingredients_text_en || product.ingredients_text || "❌ لا توجد مكونات";
 
                 let gluten_status = "🚨 غير محدد";
@@ -97,7 +132,6 @@
                     gluten_status = hasGluten ? "❌ يحتوي على الغلوتين (تحليل المكونات)" : "✅ خالٍ من الغلوتين (تحليل المكونات)";
                 }
 
-                // تنسيق عرض المكونات كقائمة
                 const formattedIngredients = ingredients
                     .split(',')
                     .map(ingredient => `<li>${ingredient.trim()}</li>`)
@@ -131,20 +165,44 @@
         }
 
         function startCamera() {
-            const qrCodeScanner = new Html5Qrcode("reader");
+            const cameraSelect = document.getElementById('camera-select');
+
+            if (isCameraStarted) {
+                // إذا كانت الكاميرا قد بدأت بالفعل، لا نبدأها مرة أخرى
+                return;
+            }
+
+            qrCodeScanner = new Html5Qrcode("reader");
 
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
-                    const cameraId = devices[0].id;
+                    cameraSelect.innerHTML = ""; // مسح الخيارات السابقة
+                    let backCamera = devices.find(device => device.label.toLowerCase().includes("back")) || devices[0];
+                    devices.forEach(device => {
+                        const option = document.createElement('option');
+                        option.value = device.id;
+                        option.text = device.label || `كاميرا ${device.id}`;
+                        cameraSelect.appendChild(option);
+                    });
+
+                    // اختيار الكاميرا الخلفية إذا كانت متاحة
+                    const selectedCameraId = backCamera.id;
+                    cameraSelect.value = selectedCameraId; // تعيين الكاميرا الخلفية كخيار افتراضي
+
                     qrCodeScanner.start(
-                        cameraId,
+                        selectedCameraId,
                         {
                             fps: 10,
                             qrbox: 250
                         },
                         onScanSuccess,
                         onScanFailure
-                    );
+                    ).then(() => {
+                        isCameraStarted = true; // تعيين المتغير إلى true بعد بدء الكاميرا
+                    }).catch(error => {
+                        console.error("📵 خطأ بدء الكاميرا:", error);
+                        document.getElementById('permission-error').innerText = "❌ حدث خطأ أثناء بدء الكاميرا.";
+                    });
                 } else {
                     document.getElementById('permission-error').innerText = "❌ لم يتم العثور على كاميرا.";
                 }
