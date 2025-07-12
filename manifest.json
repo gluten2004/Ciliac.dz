@@ -1,19 +1,19 @@
-
 {
-  "name": "CILIAC.DZ",
-  "short_name": "CILIAC",
-  "start_url": "/Ciliac.dz/",
+  "name": "Ciliac.dz",
+  "short_name": "Ciliac",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2c6e49",
+  "theme_color": "#2E8B57",
+  "description": "منصة لمرافقة مرضى السيلياك في الجزائر",
   "icons": [
     {
-      "src": "/Ciliac.dz/icons/icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/Ciliac.dz/icons/icon-512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
