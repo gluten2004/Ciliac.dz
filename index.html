@@ -1,13 +1,13 @@
 <!DOCTYPE html> 
 <html lang="ar">
 <head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2E8B57">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CIlIAC.Dz</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/Ciliac.dz/icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/Ciliac.dz/icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/Ciliac.dz/icons/icon-512.png">
-<link rel="manifest" href="/Ciliac.dz/manifest.json">
+
 
    <style>
         * {
@@ -189,7 +189,7 @@
    </script>
   <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/Ciliac.dz/service-worker.js')
+        navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker مسجل بنجاح'))
         .catch((err) => console.error('❌ فشل تسجيل Service Worker:', err));
     }
@@ -244,7 +244,6 @@
     <button id="installBtn" style="display: none; padding: 12px 25px; font-size: 18px; background-color: #388e3c; color: white; border: none; border-radius: 10px; cursor: pointer;">
       📲 تثبيت التطبيق
     </button>
-    <button id="installBtn" style="display: none;">📲 تثبيت التطبيق</button>
 
     <script>
         let deferredPrompt;
@@ -300,6 +299,17 @@
         }
     });
     </script>
-    
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(registration) {
+        console.log('✅ Service Worker مسجّل بنجاح:', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('❌ فشل تسجيل Service Worker:', error);
+      });
+  }
+</script>
+
 </body>
 </html>
