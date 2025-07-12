@@ -207,6 +207,9 @@
         <button onclick="switchLanguage('ar')">🇩🇿 العربية</button>
         <button onclick="switchLanguage('fr')">🇫🇷 Français</button>
     </div>
+    <div id="splash-screen">
+  <img src="images/splash.png" alt="Ciliac.dz Splash Screen" />
+   </div>
 
     <div class="container">
         <div class="search-section">
@@ -311,6 +314,16 @@
         console.log('❌ فشل تسجيل Service Worker:', error);
       });
   }
+</script>
+<script>
+  window.addEventListener('load', function () {
+    const splash = document.getElementById('splash-screen');
+    setTimeout(() => {
+      splash.style.opacity = 0;
+      splash.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => splash.style.display = 'none', 500);
+    }, 1500); // المدة قبل الإخفاء (1.5 ثانية)
+  });
 </script>
 
 </body>
